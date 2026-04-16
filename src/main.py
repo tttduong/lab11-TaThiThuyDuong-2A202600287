@@ -1,5 +1,5 @@
 """
-Lab 11 — Main Entry Point
+Lab 11 — Main Entry Point (OpenAI version)
 Run the full lab flow: attack -> defend -> test -> HITL design
 
 Usage:
@@ -26,12 +26,12 @@ async def part1_attacks():
     from attacks.attacks import run_attacks, generate_ai_attacks
 
     # Create and test the unsafe agent
-    agent, runner = create_unsafe_agent()
-    await test_agent(agent, runner)
+    agent = create_unsafe_agent()
+    await test_agent(agent)
 
     # TODO 1: Run manual adversarial prompts
     print("\n--- Running manual attacks (TODO 1) ---")
-    results = await run_attacks(agent, runner)
+    results = await run_attacks(agent)
 
     # TODO 2: Generate AI attack test cases
     print("\n--- Generating AI attacks (TODO 2) ---")
@@ -46,7 +46,7 @@ async def part2_guardrails():
     print("PART 2: Guardrails")
     print("=" * 60)
 
-    # Part 2A: Input guardrails
+    # Part 2A: Input guardrails (no API call needed)
     print("\n--- Part 2A: Input Guardrails ---")
     from guardrails.input_guardrails import (
         test_injection_detection,
@@ -57,15 +57,14 @@ async def part2_guardrails():
     print()
     test_topic_filter()
     print()
-    await test_input_plugin()
+    test_input_plugin()
 
     # Part 2B: Output guardrails
     print("\n--- Part 2B: Output Guardrails ---")
-    from guardrails.output_guardrails import test_content_filter, _init_judge
-    _init_judge()  # Initialize LLM judge if TODO 7 is done
+    from guardrails.output_guardrails import test_content_filter
     test_content_filter()
 
-    # Part 2C: NeMo Guardrails
+    # Part 2C: NeMo Guardrails (optional — skip if not installed)
     print("\n--- Part 2C: NeMo Guardrails ---")
     try:
         from guardrails.nemo_guardrails import init_nemo, test_nemo_guardrails
@@ -96,8 +95,8 @@ async def part3_testing():
 
     # TODO 11: Automated security pipeline
     print("\n--- TODO 11: Security Test Pipeline ---")
-    agent, runner = create_unsafe_agent()
-    pipeline = SecurityTestPipeline(agent, runner)
+    agent = create_unsafe_agent()
+    pipeline = SecurityTestPipeline(agent)
     results = await pipeline.run_all()
     if results:
         pipeline.print_report(results)
